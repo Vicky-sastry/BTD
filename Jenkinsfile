@@ -3,16 +3,16 @@ pipeline {
     tools {
         maven "Maven"   
     }   
-    environment{
+   /* environment{
         sonarscanner = tool 'SonarScanner'
-    }
+    }*/
     stages {
         stage('Compile-Build-Test ') {
             steps {
                 sh 'mvn clean package'
             }
         }
-        stage('SonarQube Analysis'){
+       /* stage('SonarQube Analysis'){
             steps{
                withSonarQubeEnv('sonarqube'){
                      sh '${sonarscanner}/bin/sonar-scanner -Dproject.settings=./sonar-project.properties'
@@ -60,19 +60,19 @@ pipeline {
                     //sshPublisher(publishers: [sshPublisherDesc(configName: 'Ansible_server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ansible-playbook /opt/playbooks/project-ansible.yml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
                 }
             }
-        }
+        } */
         
-        /*stage('Deployment to AWS'){
+        stage('Deployment to AWS'){
             steps{
-            withCredentials([usernamePassword(credentialsId: 'tomcatCredentials', passwordVariable: 'password', usernameVariable: 'username'),string(credentialsId: 'TOMCAT_URL', variable: 'tomcat_url')]){
+            withCredentials([usernamePassword(credentialsId: 'Tomcat_cred', passwordVariable: 'password', usernameVariable: 'username'),string(credentialsId: 'TOMCAT_URL', variable: 'tomcat_url')]){
                     sh 'curl ${tomcat_url}/manager/text/undeploy?path=/BMI -u ${username}:${password}'
                     sh 'curl -v -u ${username}:${password} -T target/BMI${BUILD_NUMBER}.war ${tomcat_url}/manager/text/deploy?path=/BMI'
                 }
             }
-        }*/
+        }
         
      }
-               post { 
+         /*      post { 
                 success { 
                     echo 'notified to slack '
                     slackSend (color: '#00FF00', message: " JOB SUCCESSFUL: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
@@ -81,7 +81,7 @@ pipeline {
                     echo 'notified to slack'
                     slackSend (color: '#FF0000', message: " JOB FAILED: Job '${JOB_NAME} [${BUILD_NUMBER}]' (${BUILD_URL})")
                 }
-               }
+               } */
    
 
 }
